@@ -5,7 +5,7 @@ import { Pool, PoolConnection } from 'mysql2/promise';
 import { Configuration} from "../../core/configuration/configuration.interface";
 
 @Injectable()
-export class DatabaseService implements OnModuleInit {
+export class DatabaseUtil implements OnModuleInit {
     public CP: Pool;
 
     constructor(private readonly configService: ConfigService) {
