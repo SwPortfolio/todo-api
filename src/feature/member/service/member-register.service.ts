@@ -3,13 +3,16 @@ import {PoolConnection} from "mysql2/promise";
 import {DatabaseUtil} from "../../../shared/database/database.util";
 import {RegisterDto} from "../dto/register.dto";
 import {MemberModel} from "../member.model";
-import { v4 as uuid4} from 'uuid';
-import * as crypto from "crypto";
+import {PasswordService} from "./password.service";
 
 @Injectable()
 export class MemberRegisterService {
     private connection: PoolConnection;
-    constructor(private readonly databaseUtil: DatabaseUtil, private readonly memberModel: MemberModel) {}
+    constructor(
+        private readonly databaseUtil: DatabaseUtil,
+        private readonly memberModel: MemberModel,
+        private readonly passwordService: PasswordService
+    ) {}
 
     /**
      * 회원가입
@@ -31,7 +34,7 @@ export class MemberRegisterService {
                 return { resCode: '0001' };
             } else {
                 // 비밀번호 암호화
-                const password = this.hashPassword(registerDto.password);
+                const password = this.passwordService.hashPassword(registerDto.password);
 
                 // 회원 저장
                 await this.memberModel.createMember(this.connection, memberId, registerDto.email, password, registerDto.nickname);
@@ -105,15 +108,5 @@ export class MemberRegisterService {
         } catch (err) {
             throw err;
         }
-    }
-
-    /**
-     * 비밀번호 암호화
-     * @param password
-     */
-    hashPassword(password: string): string {
-        const salt: string = uuid4().replaceAll('-', '');
-
-        return crypto.createHash('sha512').update(password + salt).digest('hex') + ':' + salt;
     }
 }

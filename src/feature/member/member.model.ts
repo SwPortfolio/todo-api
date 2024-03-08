@@ -54,4 +54,50 @@ export class MemberModel {
             [email],
         );
     }
+
+    /**
+     * 회원 로그인 email
+     * @param connection
+     * @param email
+     */
+    async getMemberLogin(connection: PoolConnection, email: string) {
+        return await this.databaseUtil.dbQuery(
+            connection,
+            `select * from member where email=? and deleteYn='N';`,
+            [email],
+        );
+    }
+
+    /**
+     * 회원 토큰 삭제
+     * @param connection
+     * @param memberPkey
+     */
+    async deleteMemberToken(connection: PoolConnection, memberPkey: number) {
+        return await this.databaseUtil.dbQuery(
+            connection,
+            `delete from memberToken where memberPkey=?`,
+            [memberPkey],
+        );
+    }
+
+    /**
+     * 회원 토큰 저장
+     * @param connection
+     * @param memberPkey
+     * @param token
+     */
+    async createMemberToken(connection: PoolConnection, memberPkey: number, token: string) {
+        return await this.databaseUtil.dbQuery(
+            connection,
+            `
+                insert into memberToken (
+                    memberPkey, accessToken, refreshToken, expireDate, regDate      
+                ) values (
+                    ?, ?, '', date_add(now(), interval 90 day), now()
+                )
+            `,
+            [memberPkey, token],
+        );
+    }
 }
