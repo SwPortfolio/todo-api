@@ -1,10 +1,12 @@
-import {Body, Controller, Post, Req, Res} from "@nestjs/common";
+import {Body, Controller, Get, Post, Req, Res, UseGuards} from "@nestjs/common";
 import {RegisterDto} from "./dto/register.dto";
 import {ResponseUtil} from "../../shared/response/response.util";
 import {MemberRegisterService} from "./service/member-register.service";
 import {LoginDto} from "./dto/login.dto";
 import {MemberLoginService} from "./service/member-login.service";
 import {MemberTokenService} from "./service/member-token.service";
+import {AuthGuard} from "@nestjs/passport";
+import {MemberInfoService} from "./service/member-info.service";
 
 @Controller('member')
 export class MemberController {
@@ -13,6 +15,7 @@ export class MemberController {
         private readonly memberRegisterService: MemberRegisterService,
         private readonly memberLoginService: MemberLoginService,
         private readonly memberTokenService: MemberTokenService,
+        private readonly memberInfoService: MemberInfoService,
     ) {}
 
     /**
@@ -34,6 +37,12 @@ export class MemberController {
         }
     }
 
+    /**
+     * 로그인
+     * @param req
+     * @param res
+     * @param loginDto
+     */
     @Post('/login')
     async login(@Req() req: any, @Res() res: any, @Body() loginDto: LoginDto) {
         try {
@@ -60,6 +69,26 @@ export class MemberController {
                     }
                 );
             }
+        } catch (err) {
+            return this.responseUtil.response(res, 500, '9999', {}, {});
+        }
+    }
+
+    /**
+     * 회원 정보 조회
+     * @param req
+     * @param res
+     */
+    @Get('/info')
+    @UseGuards(AuthGuard('auth-jwt'))
+    async memberInfo(@Req() req: any, @Res() res: any) {
+        try {
+            const memberId = req.user.memberId; // 회원 일련 아이디
+
+            // 회원 상세조회
+            const { member } = await this.memberInfoService.getInfo(memberId);
+
+            return this.responseUtil.response(res, 200, '0000', {}, { member: member });
         } catch (err) {
             return this.responseUtil.response(res, 500, '9999', {}, {});
         }

@@ -4,8 +4,7 @@ import {PoolConnection} from "mysql2/promise";
 
 @Injectable()
 export class MemberModel {
-    constructor(private readonly databaseUtil: DatabaseUtil) {
-    }
+    constructor(private readonly databaseUtil: DatabaseUtil) {}
 
     /**
      * 회원 저장
@@ -99,5 +98,23 @@ export class MemberModel {
             `,
             [memberPkey, token],
         );
+    }
+
+    /**
+     * 회원 정보 조회
+     * @param connection
+     * @param memberId
+     */
+    async getMemberInfo(connection: PoolConnection, memberId: string) {
+        return await this.databaseUtil.dbQuery(
+            connection,
+            `
+                select 
+                    memberId, email, nickname, regDate 
+                from member 
+                where memberId=?
+            `,
+            [memberId]
+        )
     }
 }

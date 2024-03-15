@@ -4,6 +4,7 @@ import {JwtModule} from "@nestjs/jwt";
 import {ConfigService} from "@nestjs/config";
 import { Configuration } from "../configuration/configuration.interface";
 import {jwtStrategy} from "./jwt-strategy.service";
+import {AuthModel} from "./auth.model";
 
 @Global()
 @Module({
@@ -18,7 +19,7 @@ import {jwtStrategy} from "./jwt-strategy.service";
             })
         })
     ],
-    providers: [jwtStrategy],
+    providers: [jwtStrategy, AuthModel],
     exports: [],
 })
 export class AuthModule {}
