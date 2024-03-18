@@ -29,6 +29,13 @@ const configuration: Configuration = {
     jwt: {
         secret: process.env.JWT_SECRET || '',
     },
+
+    awsconfig: {
+        awsAccessKeyId: process.env.AWSACCESSKEYID || '',
+        awsSecretAccessKey: process.env.AWSSECRETACCESSKEY || '',
+        s3Region: process.env.S3REGION || '',
+        s3Bucket: process.env.S3BUCKET || '',
+    }
 }
 
 const configFunction: ConfigFactory<Configuration> = () => configuration;

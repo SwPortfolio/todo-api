@@ -15,4 +15,11 @@ export interface Configuration {
     jwt: {
         secret: string;
     };
+
+    awsconfig: {
+        awsAccessKeyId: string;
+        awsSecretAccessKey: string;
+        s3Region: string;
+        s3Bucket: string;
+    };
 }
