@@ -46,7 +46,6 @@ export class MemberController {
     @Post('/login')
     async login(@Req() req: any, @Res() res: any, @Body() loginDto: LoginDto) {
         try {
-            console.log('로그인 요청');
             const { resCode, memberPkey, memberId, email, nickname } = await this.memberLoginService.login(loginDto);
 
             if (resCode !== '0000') {

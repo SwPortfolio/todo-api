@@ -1,12 +1,17 @@
-import {Controller, Get, Post, Req, Res, UseGuards} from "@nestjs/common";
+import {Controller, Get, Post, Query, Req, Res, UseGuards} from "@nestjs/common";
 import {ResponseUtil} from "../../shared/response/response.util";
 import {AuthGuard} from "@nestjs/passport";
 import {ProjectListService} from "./service/project-list.service";
+import {ProjectDetailDto} from "./dto/project-detail.dto";
+import {ProjectDetailService} from "./service/project-detail.service";
 
 @Controller('project')
 export class ProjectController {
-    constructor(private readonly responseUtil: ResponseUtil, private readonly projectListService: ProjectListService) {
-    }
+    constructor(
+        private readonly responseUtil: ResponseUtil,
+        private readonly projectListService: ProjectListService,
+        private readonly projectDetailService: ProjectDetailService,
+    ) {}
 
     @Get('/list')
     @UseGuards(AuthGuard('auth-jwt'))
@@ -28,16 +33,19 @@ export class ProjectController {
 
     @Get('')
     @UseGuards(AuthGuard('auth-jwt'))
-    async getProject(@Req() req: any, @Res() res: any) {
+    async getProject(@Req() req: any, @Res() res: any, @Query() projectDetailDto: ProjectDetailDto) {
         try {
             const memberId = req.user.memberId; // 회원 일련 아이디
+            const projectPkey = projectDetailDto.projectPkey; // 프로젝트 일련번호
 
             /**
              * project 상세조회
              * project 정보 조회
              */
 
-            return this.responseUtil.response(res, 200, '0000', {}, {});
+            const { resCode, project } = await this.projectDetailService.getProjectDetail(memberId, projectPkey);
+
+            return this.responseUtil.response(res, 200, resCode, {}, { project: project });
         } catch (err) {
             return this.responseUtil.response(res, 500, '9999', {}, {});
         }

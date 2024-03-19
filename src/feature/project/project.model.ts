@@ -16,7 +16,7 @@ export class ProjectModel {
         return await this.databaseUtil.dbQuery(
             connection,
             `
-                select *
+                select projectPkey, projectName, projectColor, sort, regDate
                 from project
                 join member on project.memberPkey=member.memberPkey
                 where member.memberId=? and project.deleteYn='N' 
@@ -26,15 +26,39 @@ export class ProjectModel {
         )
     }
 
+    /**
+     * project 별 section 목록 조회
+     * @param connection
+     * @param projectPkey
+     */
     async getSectionList(connection: PoolConnection, projectPkey: number) {
         return await this.databaseUtil.dbQuery(
             connection,
             `
-                select *
+                select sectionPkey, sectionName
                 from section
-                where proejctPkey=?
+                where projectPkey=?
             `,
-            []
+            [projectPkey]
+        );
+    }
+
+    /**
+     * project 상세조회
+     * @param connection
+     * @param memberId
+     * @param projectPkey
+     */
+    async getProject(connection: PoolConnection, memberId: string, projectPkey: number) {
+        return await this.databaseUtil.dbQuery(
+            connection,
+            `
+                select projectPkey, projectName, projectColor, sort, regDate
+                from project
+                join member on project.memberPkey=member.memberPkey
+                where member.memberId=? and project.projectPkey=? 
+            `,
+            [memberId, projectPkey]
         );
     }
 }
