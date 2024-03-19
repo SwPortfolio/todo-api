@@ -3,6 +3,8 @@
 /node_modules
 /http
 
+/src/core/configuration/.env.*
+
 # Logs
 logs
 *.log
