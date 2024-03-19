@@ -4,6 +4,8 @@ import {AuthGuard} from "@nestjs/passport";
 import {ProjectListService} from "./service/project-list.service";
 import {ProjectDetailDto} from "./dto/project-detail.dto";
 import {ProjectDetailService} from "./service/project-detail.service";
+import {SectionDetailService} from "./service/section-detail.service";
+import {SectionDetailDto} from "./dto/section-detail.dto";
 
 @Controller('project')
 export class ProjectController {
@@ -11,6 +13,7 @@ export class ProjectController {
         private readonly responseUtil: ResponseUtil,
         private readonly projectListService: ProjectListService,
         private readonly projectDetailService: ProjectDetailService,
+        private readonly sectionDetailService: SectionDetailService,
     ) {}
 
     @Get('/list')
@@ -53,16 +56,19 @@ export class ProjectController {
 
     @Get('/section')
     @UseGuards(AuthGuard('auth-jwt'))
-    async getSection(@Req() req: any, @Res() res: any) {
+    async getSection(@Req() req: any, @Res() res: any, @Query() sectionDetailDto: SectionDetailDto) {
         try {
             const memberId = req.user.memberId; // 회원 일련 아이디
+            const sectionPkey = sectionDetailDto.sectionPkey; // section 일련번호
 
             /**
              * section 상세조회
              * section 정보 조회
              */
 
-            return this.responseUtil.response(res, 200, '0000', {}, {});
+            const { resCode, section } = await this.sectionDetailService.getSection(memberId, sectionPkey);
+
+            return this.responseUtil.response(res, 200, resCode, {}, { section: section });
         } catch (err) {
             return this.responseUtil.response(res, 500, '9999', {}, {});
         }

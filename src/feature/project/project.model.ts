@@ -61,4 +61,24 @@ export class ProjectModel {
             [memberId, projectPkey]
         );
     }
+
+    /**
+     * section 상세조회
+     * @param connection
+     * @param memberId
+     * @param sectionPkey
+     */
+    async getSection(connection: PoolConnection, memberId: string, sectionPkey: number) {
+        return await this.databaseUtil.dbQuery(
+            connection,
+            `
+                select sectionPkey, sectionName
+                from section
+                join project on section.projectPkey=project.projectPkey
+                join member on project.memberPkey=member.memberPkey
+                where member.memberId=? and sectionPkey=?
+            `,
+            [memberId, sectionPkey]
+        );
+    }
 }
