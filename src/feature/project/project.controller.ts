@@ -1,4 +1,4 @@
-import {Controller, Get, Post, Query, Req, Res, UseGuards} from "@nestjs/common";
+import {Body, Controller, Get, Post, Query, Req, Res, UseGuards} from "@nestjs/common";
 import {ResponseUtil} from "../../shared/response/response.util";
 import {AuthGuard} from "@nestjs/passport";
 import {ProjectListService} from "./service/project-list.service";
@@ -6,6 +6,10 @@ import {ProjectDetailDto} from "./dto/project-detail.dto";
 import {ProjectDetailService} from "./service/project-detail.service";
 import {SectionDetailService} from "./service/section-detail.service";
 import {SectionDetailDto} from "./dto/section-detail.dto";
+import {ProjectRegisterDto} from "./dto/project-register.dto";
+import {ProjectRegisterService} from "./service/project-register.service";
+import {SectionRegisterService} from "./service/section-register.service";
+import {SectionRegisterDto} from "./dto/section-register.dto";
 
 @Controller('project')
 export class ProjectController {
@@ -14,6 +18,8 @@ export class ProjectController {
         private readonly projectListService: ProjectListService,
         private readonly projectDetailService: ProjectDetailService,
         private readonly sectionDetailService: SectionDetailService,
+        private readonly projectRegisterService: ProjectRegisterService,
+        private readonly sectionRegisterService: SectionRegisterService,
     ) {}
 
     @Get('/list')
@@ -76,14 +82,17 @@ export class ProjectController {
 
     @Post('/register')
     @UseGuards(AuthGuard('auth-jwt'))
-    async createProject(@Req() req: any, @Res() res: any) {
+    async registerProject(@Req() req: any, @Res() res: any, @Body() projectRegisterDto: ProjectRegisterDto) {
         try {
-            const memberId = req.user.memberId; // 회원 일련 아이디
+            const memberPkey = req.user.memberPkey; // 회원 일련 아이디
 
             /**
              * project 생성
-             *
+             * - projectName
+             * - projectColor
+             * - sort
              */
+            await this.projectRegisterService.registerProject(memberPkey, projectRegisterDto);
 
             return this.responseUtil.response(res, 200, '0000', {}, {});
         } catch (err) {
@@ -112,7 +121,7 @@ export class ProjectController {
 
     @Post('/register')
     @UseGuards(AuthGuard('auth-jwt'))
-    async createSection(@Req() req: any, @Res() res: any) {
+    async registerSection(@Req() req: any, @Res() res: any, @Body() sectionRegisterDto: SectionRegisterDto) {
         try {
             const memberId = req.user.memberId; // 회원 일련 아이디
 
@@ -121,7 +130,13 @@ export class ProjectController {
              *
              */
 
-            return this.responseUtil.response(res, 200, '0000', {}, {});
+            const { resCode } = await this.sectionRegisterService.registerSection(
+                memberId,
+                sectionRegisterDto.projectPkey,
+                sectionRegisterDto.sectionName
+            );
+
+            return this.responseUtil.response(res, 200, resCode, {}, {});
         } catch (err) {
             return this.responseUtil.response(res, 500, '9999', {}, {});
         }

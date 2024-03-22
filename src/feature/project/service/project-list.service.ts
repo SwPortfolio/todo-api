@@ -22,10 +22,10 @@ export class ProjectListService {
             const projectSet = await this.projectModel.getProjectList(this.connection, memberId);
 
             // section 목록 조회
-            const projectList = projectSet.map(async (project: any) => {
+            const projectList = await Promise.all(projectSet.map(async (project: any) => {
                 project.sectionList = await this.projectModel.getSectionList(this.connection, project.projectPkey);
                 return project;
-            });
+            }));
 
             return { projectList: projectList };
         } catch (err) {

@@ -16,7 +16,7 @@ export class ProjectModel {
         return await this.databaseUtil.dbQuery(
             connection,
             `
-                select projectPkey, projectName, projectColor, sort, regDate
+                select projectPkey, projectName, projectColor, sort, project.regDate
                 from project
                 join member on project.memberPkey=member.memberPkey
                 where member.memberId=? and project.deleteYn='N' 
@@ -53,7 +53,7 @@ export class ProjectModel {
         return await this.databaseUtil.dbQuery(
             connection,
             `
-                select projectPkey, projectName, projectColor, sort, regDate
+                select projectPkey, projectName, projectColor, sort, project.regDate
                 from project
                 join member on project.memberPkey=member.memberPkey
                 where member.memberId=? and project.projectPkey=? 
@@ -80,5 +80,41 @@ export class ProjectModel {
             `,
             [memberId, sectionPkey]
         );
+    }
+
+    /**
+     * project 생성
+     * @param connection
+     * @param memberPkey
+     * @param projectName
+     * @param projectColor
+     * @param sort
+     */
+    async registerProject(connection: PoolConnection, memberPkey: number, projectName: string, projectColor: string, sort: number) {
+        return await this.databaseUtil.dbQuery(
+            connection,
+            `
+                insert into project (
+                    memberPkey, projectName, projectColor, sort, regDate, deleteYn
+                ) values (
+                    ?, ?, ?, ?, now(), 'N'
+                )   
+            `,
+            [memberPkey, projectName, projectColor, sort]
+        );
+    }
+
+    async registerSection(connection: PoolConnection, projectPkey: number, sectionName: string) {
+        return await this.databaseUtil.dbQuery(
+            connection,
+            `
+                insert into section(
+                    projectPkey, sectionName
+                ) values (
+                    ?, ?
+                )
+            `,
+            [projectPkey, sectionName]
+        )
     }
 }

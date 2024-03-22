@@ -1,4 +1,4 @@
-import {HttpException, HttpStatus, Injectable, Req} from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
@@ -34,6 +34,10 @@ export class jwtStrategy extends PassportStrategy(Strategy, 'auth-jwt') {
             // 토큰으로 회원 조회
             const memberTokenSet = await this.authModel.getMemberToken(this.connection, token, payload.memberId);
             if (memberTokenSet.length > 0) {
+                const memberToken = memberTokenSet[0];
+
+                payload.memberPkey = memberToken.memberPkey;
+
                 return payload;
             } else {
                 throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
