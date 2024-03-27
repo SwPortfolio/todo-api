@@ -16,7 +16,7 @@ export class ProjectModel {
         return await this.databaseUtil.dbQuery(
             connection,
             `
-                select projectPkey, projectName, projectColor, sort, project.regDate
+                select projectPkey, projectName, projectColor, project.regDate
                 from project
                 join member on project.memberPkey=member.memberPkey
                 where member.memberId=? and project.deleteYn='N' 

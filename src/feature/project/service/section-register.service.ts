@@ -33,7 +33,7 @@ export class SectionRegisterService {
 
                 return { resCode: '0000' };
             } else {
-                // project를 찾을 수 없습니다.
+                // project 를 찾을 수 없습니다.
                 return { resCode: '0004' };
             }
 

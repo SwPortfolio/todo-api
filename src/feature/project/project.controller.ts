@@ -119,7 +119,7 @@ export class ProjectController {
         }
     }
 
-    @Post('/register')
+    @Post('/section/register')
     @UseGuards(AuthGuard('auth-jwt'))
     async registerSection(@Req() req: any, @Res() res: any, @Body() sectionRegisterDto: SectionRegisterDto) {
         try {
