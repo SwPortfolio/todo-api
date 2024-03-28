@@ -18,6 +18,16 @@ export class MemberController {
         private readonly memberInfoService: MemberInfoService,
     ) {}
 
+    @Get('')
+    @UseGuards(AuthGuard('auth-jwt'))
+    async loginCheck(@Res() res: any) {
+        try {
+            return this.responseUtil.response(res, 200, '0000', {}, {});
+        } catch (err) {
+            return this.responseUtil.response(res, 500, '9999', {}, {});
+        }
+    }
+
     /**
      * 회원가입
      * @param req

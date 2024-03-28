@@ -22,6 +22,11 @@ export class ProjectController {
         private readonly sectionRegisterService: SectionRegisterService,
     ) {}
 
+    /**
+     * 프로젝트 목록 조회
+     * @param req
+     * @param res
+     */
     @Get('/list')
     @UseGuards(AuthGuard('auth-jwt'))
     async getProjectList(@Req() req: any, @Res() res: any) {
@@ -40,6 +45,12 @@ export class ProjectController {
         }
     }
 
+    /**
+     * 프로젝트 상세조회
+     * @param req
+     * @param res
+     * @param projectDetailDto
+     */
     @Get('')
     @UseGuards(AuthGuard('auth-jwt'))
     async getProject(@Req() req: any, @Res() res: any, @Query() projectDetailDto: ProjectDetailDto) {
@@ -60,6 +71,12 @@ export class ProjectController {
         }
     }
 
+    /**
+     * 프로젝트 구분 상세조회
+     * @param req
+     * @param res
+     * @param sectionDetailDto
+     */
     @Get('/section')
     @UseGuards(AuthGuard('auth-jwt'))
     async getSection(@Req() req: any, @Res() res: any, @Query() sectionDetailDto: SectionDetailDto) {
@@ -80,6 +97,12 @@ export class ProjectController {
         }
     }
 
+    /**
+     * 프로젝트 생성
+     * @param req
+     * @param res
+     * @param projectRegisterDto
+     */
     @Post('/register')
     @UseGuards(AuthGuard('auth-jwt'))
     async registerProject(@Req() req: any, @Res() res: any, @Body() projectRegisterDto: ProjectRegisterDto) {
@@ -100,6 +123,11 @@ export class ProjectController {
         }
     }
 
+    /**
+     * 프로젝트 수정
+     * @param req
+     * @param res
+     */
     @Post('/modify')
     @UseGuards(AuthGuard('auth-jwt'))
     async modifyProject(@Req() req: any, @Res() res: any) {
@@ -119,6 +147,12 @@ export class ProjectController {
         }
     }
 
+    /**
+     * 프로젝트 구분 생성
+     * @param req
+     * @param res
+     * @param sectionRegisterDto
+     */
     @Post('/section/register')
     @UseGuards(AuthGuard('auth-jwt'))
     async registerSection(@Req() req: any, @Res() res: any, @Body() sectionRegisterDto: SectionRegisterDto) {
@@ -142,7 +176,12 @@ export class ProjectController {
         }
     }
 
-    @Post('/modify')
+    /**
+     * 프로젝트 구분 수정
+     * @param req
+     * @param res
+     */
+    @Post('/section/modify')
     @UseGuards(AuthGuard('auth-jwt'))
     async modifySection(@Req() req: any, @Res() res: any) {
         try {
